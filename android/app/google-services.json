@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1020463531499",
+    "project_id": "students-data-779f9",
+    "storage_bucket": "students-data-779f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020463531499:android:b3ad3aebe6a2a73e1785ae",
+        "android_client_info": {
+          "package_name": "com.ashutosh.students_data"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1020463531499-rd40hsm3rbg644r6geujmiefp4e0smdl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJ9HVGcLtZMr6-ZuNp8HU4QsZhRP2THxM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1020463531499-rd40hsm3rbg644r6geujmiefp4e0smdl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
