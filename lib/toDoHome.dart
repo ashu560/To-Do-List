@@ -1,16 +1,18 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:students_data/loginPage.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class ToDo extends StatefulWidget {
+  const ToDo({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<ToDo> createState() => _ToDoState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ToDoState extends State<ToDo> {
   // Text editing controllers to capture input from text fields
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
@@ -58,6 +60,15 @@ class _HomePageState extends State<HomePage> {
       print('Error deleting document: $error');
     }
   }
+  
+  //Signout functionality
+    void SignUserOut() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +89,15 @@ class _HomePageState extends State<HomePage> {
           ),
           centerTitle: true,
           leading: const Icon(
-            Icons.handshake,
+            Icons.people_alt,
             color: Colors.white,
           ),
+          actions: [
+            IconButton(
+              onPressed: SignUserOut,
+              icon: Icon(Icons.logout),
+            ),
+          ],
           elevation: 0,
         ),
         body: Column(
