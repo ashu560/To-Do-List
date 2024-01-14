@@ -2,6 +2,8 @@
 
 Title: 🚀 Building a Flutter App with Firebase: A Journey into CRUD Operations
 
+Link to aPP : https://play.google.com/store/apps/details?id=com.ashutosh.students_data
+
 Hey LinkedIn fam! 👋 Excited to share my latest project with you - a Flutter app designed for seamless CRUD operations, now live on the Google Play Store! 🌐✨
 
 📱 App Overview
