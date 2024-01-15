@@ -1,3 +1,7 @@
+#Ashu ignore files
+
+**/google-services.json
+
 # Miscellaneous
 *.class
 *.log
