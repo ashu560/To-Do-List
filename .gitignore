@@ -1,6 +1,6 @@
 #Ashu ignore files
 
-/*/google-services.json
+android/app/google-services.json
 
 # Miscellaneous
 *.class
