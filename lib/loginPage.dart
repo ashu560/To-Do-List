@@ -150,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                       // );
                     },
                     child: Text(
-                      "Forgot Your Passwprd ?",
+                      "Forgot Your Password ?",
                       style: TextStyle(color: Colors.blue),
                     ),
                   ),

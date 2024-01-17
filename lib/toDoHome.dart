@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,56 +11,65 @@ class ToDo extends StatefulWidget {
 }
 
 class _ToDoState extends State<ToDo> {
-  // Text editing controllers to capture input from text fields
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
-  // Method to save data to Firestore
-  Future<void> saveDataToFirestore(String firstName, String lastName) async {
-    // Check if the entered first name and last name are not empty
-    if (firstName.isNotEmpty && lastName.isNotEmpty) {
+  // Declare user variable here
+  late User? user;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize user variable in initState
+    user = FirebaseAuth.instance.currentUser;
+  }
+
+  Future<void> saveDataToFirestore(String title, String description) async {
+    if (title.isNotEmpty && description.isNotEmpty) {
       try {
-        CollectionReference students =
-            FirebaseFirestore.instance.collection('students');
+        // Use the null-aware operator to check if user is not null
+        if (user != null) {
+          CollectionReference todos = FirebaseFirestore.instance
+              .collection('users')
+              .doc(user!.uid) // Use the current user's UID as the document ID
+              .collection('todos');
 
-        await students.add({
-          'firstName': firstName,
-          'lastName': lastName,
-        });
+          await todos.add({
+            'title': title,
+            'description': description,
+          });
 
-        // Print success message if data is saved successfully
-        print('Data saved to Firestore successfully');
+          print('Data saved to Firestore successfully');
 
-        // Clear the text fields
-        _firstNameController.clear();
-        _lastNameController.clear();
+          _titleController.clear();
+          _descriptionController.clear();
+        } else {
+          print('User is not signed in.');
+        }
       } catch (error) {
-        // Print error message if there's an error saving data
         print('Error saving data to Firestore: $error');
       }
     }
   }
 
-  // Method to delete a document from Firestore
-  Future<void> deleteDocument(String documentId) async {
-    try {
-      // Reference to the 'Students' collection in Firestore
-      CollectionReference students =
-          FirebaseFirestore.instance.collection('students');
 
-      // Delete the document with the given documentId
-      await students.doc(documentId).delete();
+Future<void> deleteDocument(String documentId) async {
+  try {
+    CollectionReference todos = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .collection('todos');
 
-      // Print success message if document is deleted successfully
-      print('Document deleted successfully');
-    } catch (error) {
-      // Print error message if there's an error deleting the document
-      print('Error deleting document: $error');
-    }
+    await todos.doc(documentId).delete();
+
+    print('Document deleted successfully');
+  } catch (error) {
+    print('Error deleting document: $error');
   }
-  
-  //Signout functionality
-    void SignUserOut() async {
+}
+
+  void SignUserOut() async {
     await FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
       context,
@@ -84,32 +91,32 @@ class _ToDoState extends State<ToDo> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text(
-            "CRUD - OPERATION",
+            "To Do List",
             style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
           leading: const Icon(
-            Icons.people_alt,
+            Icons.check_circle_outline_outlined,
             color: Colors.white,
           ),
           actions: [
             IconButton(
               onPressed: SignUserOut,
               icon: Icon(Icons.logout),
+            color: Colors.white,
             ),
           ],
           elevation: 0,
         ),
         body: Column(
           children: [
-            // Text field for entering the first name
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: TextField(
-                controller: _firstNameController,
+                controller: _titleController,
                 decoration: const InputDecoration(
-                  labelText: "First Name",
-                  hintText: "Ashutosh",
+                  labelText: "Title",
+                  hintText: "Title",
                   hintStyle: TextStyle(
                     fontSize: 12,
                   ),
@@ -117,14 +124,13 @@ class _ToDoState extends State<ToDo> {
                 ),
               ),
             ),
-            // Text field for entering the last name
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: TextField(
-                controller: _lastNameController,
+                controller: _descriptionController,
                 decoration: const InputDecoration(
-                  labelText: "Last Name",
-                  hintText: "Deshmukh",
+                  labelText: "Description",
+                  hintText: "Description",
                   hintStyle: TextStyle(
                     fontSize: 12,
                   ),
@@ -132,21 +138,17 @@ class _ToDoState extends State<ToDo> {
                 ),
               ),
             ),
-            // Button to save the entered data to Firestore
             ElevatedButton(
               onPressed: () {
-                // Get the entered first name and last name
-                String firstName = _firstNameController.text;
-                String lastName = _lastNameController.text;
-
-                // Call the method to save data to Firestore
-                saveDataToFirestore(firstName, lastName);
+                String title = _titleController.text;
+                String description = _descriptionController.text;
+                saveDataToFirestore(title, description);
               },
               child: const Text('Save Data'),
             ),
             const SizedBox(height: 20),
             Text(
-              'Students:',
+              'Your Todo\'s:',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -156,8 +158,10 @@ class _ToDoState extends State<ToDo> {
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
-                    .collection('students')
-                    .orderBy('firstName')
+                    .collection('users')
+                    .doc(user!.uid)
+                    .collection('todos') // Access the 'todos' sub-collection
+                    .orderBy('title')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -167,19 +171,20 @@ class _ToDoState extends State<ToDo> {
                       itemBuilder: (context, index) {
                         final user =
                             users[index].data() as Map<String, dynamic>;
-                        final firstName = user['firstName'];
-                        final lastName = user['lastName'];
+                        final title = user['title'];
+                        final description = user['description'];
                         final documentId = users[index].id;
+
                         return ListTile(
                           leading: Icon(Icons.person),
-                          title: Text('$firstName $lastName'),
+                          title: Text('$title'),
+                          subtitle: Text('$description'),
                           trailing: IconButton(
                             icon: Icon(
                               Icons.delete,
                               color: Colors.red,
                             ),
                             onPressed: () {
-                              // Call the method to delete the document
                               deleteDocument(documentId);
                             },
                           ),
@@ -187,9 +192,9 @@ class _ToDoState extends State<ToDo> {
                       },
                     );
                   } else if (snapshot.hasError) {
-                    return const Text('Error loading users');
+                    return Text('Error loading users: ${snapshot.error}');
                   } else {
-                    return const CircularProgressIndicator();
+                    return CircularProgressIndicator();
                   }
                 },
               ),
