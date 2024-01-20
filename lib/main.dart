@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Students Data',
+      title: 'To Do List',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

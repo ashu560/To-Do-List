@@ -97,7 +97,7 @@ class _ToDoState extends State<ToDo> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'To Do List',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
         appBarTheme: const AppBarTheme(
@@ -112,7 +112,7 @@ class _ToDoState extends State<ToDo> {
           ),
           centerTitle: true,
           leading: const Icon(
-            Icons.check_circle_outline_outlined,
+            Icons.checklist_sharp,
             color: Colors.white,
           ),
           actions: [
