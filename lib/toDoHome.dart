@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:students_data/addTodos.dart';
 import 'package:students_data/loginPage.dart';
 
 class ToDo extends StatefulWidget {
@@ -38,6 +39,8 @@ class _ToDoState extends State<ToDo> {
           await todos.add({
             'title': title,
             'description': description,
+            'completed':
+                false, // Add the 'completed' field with a default value
           });
 
           print('Data saved to Firestore successfully');
@@ -53,21 +56,20 @@ class _ToDoState extends State<ToDo> {
     }
   }
 
+  Future<void> deleteDocument(String documentId) async {
+    try {
+      CollectionReference todos = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .collection('todos');
 
-Future<void> deleteDocument(String documentId) async {
-  try {
-    CollectionReference todos = FirebaseFirestore.instance
-        .collection('users')
-        .doc(user!.uid)
-        .collection('todos');
+      await todos.doc(documentId).delete();
 
-    await todos.doc(documentId).delete();
-
-    print('Document deleted successfully');
-  } catch (error) {
-    print('Error deleting document: $error');
+      print('Document deleted successfully');
+    } catch (error) {
+      print('Error deleting document: $error');
+    }
   }
-}
 
   void SignUserOut() async {
     await FirebaseAuth.instance.signOut();
@@ -75,6 +77,20 @@ Future<void> deleteDocument(String documentId) async {
       context,
       MaterialPageRoute(builder: (context) => LoginPage()),
     );
+  }
+
+  Future<void> MarkAsCompleted(String documentID, bool completed) async {
+    try {
+      CollectionReference todos = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user!.uid)
+          .collection('todos');
+
+      await todos.doc(documentID).update({'completed': !completed});
+      // print('Task marked as completed successfully.');
+    } catch (e) {
+      print('Error marking task completed : $e');
+    }
   }
 
   @override
@@ -103,58 +119,13 @@ Future<void> deleteDocument(String documentId) async {
             IconButton(
               onPressed: SignUserOut,
               icon: Icon(Icons.logout),
-            color: Colors.white,
+              color: Colors.white,
             ),
           ],
           elevation: 0,
         ),
         body: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextField(
-                controller: _titleController,
-                decoration: const InputDecoration(
-                  labelText: "Title",
-                  hintText: "Title",
-                  hintStyle: TextStyle(
-                    fontSize: 12,
-                  ),
-                  focusedBorder: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: TextField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(
-                  labelText: "Description",
-                  hintText: "Description",
-                  hintStyle: TextStyle(
-                    fontSize: 12,
-                  ),
-                  focusedBorder: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                String title = _titleController.text;
-                String description = _descriptionController.text;
-                saveDataToFirestore(title, description);
-              },
-              child: const Text('Save Data'),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Your Todo\'s:',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
@@ -171,14 +142,37 @@ Future<void> deleteDocument(String documentId) async {
                       itemBuilder: (context, index) {
                         final user =
                             users[index].data() as Map<String, dynamic>;
+                        final completed = user['completed'] ?? false;
                         final title = user['title'];
                         final description = user['description'];
                         final documentId = users[index].id;
 
                         return ListTile(
-                          leading: Icon(Icons.person),
-                          title: Text('$title'),
-                          subtitle: Text('$description'),
+                          leading: IconButton(
+                            onPressed: () => {MarkAsCompleted(documentId,completed)},
+                            // icon: Icon(Icons.circle_outlined),
+                            icon: Icon(
+                              completed
+                                  ? Icons.check_circle_outline
+                                  : Icons.circle_outlined,
+                            ),
+                          ),
+                          title: Text(
+                            '$title',
+                            style: TextStyle(
+                              decoration: completed
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                            ),
+                          ),
+                          subtitle: Text(
+                            '$description',
+                            style: TextStyle(
+                              decoration: completed
+                                  ? TextDecoration.lineThrough
+                                  : TextDecoration.none,
+                            ),
+                          ),
                           trailing: IconButton(
                             icon: Icon(
                               Icons.delete,
@@ -201,6 +195,7 @@ Future<void> deleteDocument(String documentId) async {
             ),
           ],
         ),
+        floatingActionButton: AddToDoBtn(),
       ),
     );
   }
