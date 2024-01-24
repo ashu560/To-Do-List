@@ -68,7 +68,7 @@ class _SignupPageState extends State<SignupPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Students Data',
+                'To Do List',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 28,

@@ -2,8 +2,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:students_data/loginPage.dart';
-import 'package:students_data/toDoHome.dart';
+import 'package:students_data/Login/loginPage.dart';
+import 'package:students_data/UI/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: isLogin ? const ToDo() : const HomePage(),
+      home: isLogin ? const home() : const HomePage(),
     );
   }
 }

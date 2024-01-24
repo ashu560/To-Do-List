@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:students_data/signUpPage.dart';
-import 'package:students_data/toDoHome.dart';
+import 'package:students_data/Login/signUpPage.dart';
+import 'package:students_data/UI/home.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -195,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ToDo(),
+                          builder: (context) => home(),
                         ),
                       );
                     }

@@ -15,6 +15,7 @@ class _AddToDoBtnState extends State<AddToDoBtn> {
 
   // Declare user variable here
   late User? user;
+  final now = DateTime.now();
 
   @override
   void initState() {
@@ -25,7 +26,7 @@ class _AddToDoBtnState extends State<AddToDoBtn> {
   }
 
   Future<void> saveDataToFirestore(String title, String description) async {
-    if (title.isNotEmpty && description.isNotEmpty) {
+    if (title.isNotEmpty || description.isNotEmpty) {
       try {
         // Use the null-aware operator to check if user is not null
         if (user != null) {
@@ -124,7 +125,6 @@ class _AddToDoBtnState extends State<AddToDoBtn> {
               ],
             );
           },
-          
         )
       },
       tooltip: 'Add your To Do Item',
