@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:students_data/Login/loginPage.dart';
 import 'package:students_data/UI/home.dart';
+import 'package:students_data/rationcard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +46,7 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
       ),
       home: isLogin ? const home() : const HomePage(),
+      // home: isLogin ? const RationCard() : const HomePage(),
     );
   }
 }
