@@ -25,7 +25,7 @@ class _homeState extends State<home> with SingleTickerProviderStateMixin {
 
     // Initialize user variable in initState
     user = FirebaseAuth.instance.currentUser;
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 1);
   }
 
   @override

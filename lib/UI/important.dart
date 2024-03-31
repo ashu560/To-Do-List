@@ -22,20 +22,20 @@ class _importantState extends State<important> {
     user = FirebaseAuth.instance.currentUser;
   }
 
-  Future<void> starDocument(String documentId) async {
-    try {
-      CollectionReference todos = FirebaseFirestore.instance
-          .collection('users')
-          .doc(user!.uid)
-          .collection('todos');
+  // Future<void> starDocument(String documentId) async {
+  //   try {
+  //     CollectionReference todos = FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(user!.uid)
+  //         .collection('todos');
 
-      await todos.doc(documentId).delete();
+  //     await todos.doc(documentId).delete();
 
-      print('Document starred successfully');
-    } catch (error) {
-      print('Error star document: $error');
-    }
-  }
+  //     print('Document starred successfully');
+  //   } catch (error) {
+  //     print('Error star document: $error');
+  //   }
+  // }
 
   Future<void> MarkAsStar(String documentID, bool star) async {
     try {
@@ -137,7 +137,9 @@ class _importantState extends State<important> {
             } else if (snapshot.hasError) {
               return Text('Error loading users : ${snapshot.error}');
             } else {
-              return CircularProgressIndicator();
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             }
           },
         ),

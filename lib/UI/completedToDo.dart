@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:students_data/UI/home.dart';
 import 'package:students_data/constants/colors.dart';
-import 'package:students_data/constants/toDoListTile.dart';
 
 class completedToDo extends StatefulWidget {
   const completedToDo({super.key});
@@ -13,8 +11,8 @@ class completedToDo extends StatefulWidget {
 }
 
 class _completedToDoState extends State<completedToDo> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+  // final TextEditingController _titleController = TextEditingController();
+  // final TextEditingController _descriptionController = TextEditingController();
 
   // Declare user variable here
   late User? user;
@@ -27,66 +25,66 @@ class _completedToDoState extends State<completedToDo> {
     user = FirebaseAuth.instance.currentUser;
   }
 
-  Future<void> saveDataToFirestore(String title, String description) async {
-    if (title.isNotEmpty && description.isNotEmpty) {
-      try {
-        // Use the null-aware operator to check if user is not null
-        if (user != null) {
-          CollectionReference todos = FirebaseFirestore.instance
-              .collection('users')
-              .doc(user!.uid) // Use the current user's UID as the document ID
-              .collection('todos');
+  // Future<void> saveDataToFirestore(String title, String description) async {
+  //   if (title.isNotEmpty && description.isNotEmpty) {
+  //     try {
+  //       // Use the null-aware operator to check if user is not null
+  //       if (user != null) {
+  //         CollectionReference todos = FirebaseFirestore.instance
+  //             .collection('users')
+  //             .doc(user!.uid) // Use the current user's UID as the document ID
+  //             .collection('todos');
 
-          await todos.add({
-            'title': title,
-            'description': description,
-            'completed':
-                false, // Add the 'completed' field with a default value
-            'star': false,
-          });
+  //         await todos.add({
+  //           'title': title,
+  //           'description': description,
+  //           'completed':
+  //               false, // Add the 'completed' field with a default value
+  //           'star': false,
+  //         });
 
-          print('Data saved to Firestore successfully');
+  //         print('Data saved to Firestore successfully');
 
-          _titleController.clear();
-          _descriptionController.clear();
-        } else {
-          print('User is not signed in.');
-        }
-      } catch (error) {
-        print('Error saving data to Firestore: $error');
-      }
-    }
-  }
+  //         _titleController.clear();
+  //         _descriptionController.clear();
+  //       } else {
+  //         print('User is not signed in.');
+  //       }
+  //     } catch (error) {
+  //       print('Error saving data to Firestore: $error');
+  //     }
+  //   }
+  // }
 
-  Future<void> deleteDocument(String documentId) async {
-    try {
-      CollectionReference todos = FirebaseFirestore.instance
-          .collection('users')
-          .doc(user!.uid)
-          .collection('todos');
+  // Future<void> deleteDocument(String documentId) async {
+  //   try {
+  //     CollectionReference todos = FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(user!.uid)
+  //         .collection('todos');
 
-      await todos.doc(documentId).delete();
+  //     await todos.doc(documentId).delete();
 
-      print('Document deleted successfully');
-    } catch (error) {
-      print('Error deleting document: $error');
-    }
-  }
+  //     print('Document deleted successfully');
+  //   } catch (error) {
+  //     print('Error deleting document: $error');
+  //   }
+  // }
 
-  Future<void> starDocument(String documentId) async {
-    try {
-      CollectionReference todos = FirebaseFirestore.instance
-          .collection('users')
-          .doc(user!.uid)
-          .collection('todos');
+  // Future<void> starDocument(String documentId) async {
+  //   try {
+  //     CollectionReference todos = FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(user!.uid)
+  //         .collection('todos');
 
-      await todos.doc(documentId).delete();
+  //     await todos.doc(documentId).delete();
 
-      print('Document starred successfully');
-    } catch (error) {
-      print('Error star document: $error');
-    }
-  }
+  //     print('Document starred successfully');
+  //   } catch (error) {
+  //     print('Error star document: $error');
+  //   }
+  // }
 
   Future<void> MarkAsCompleted(String documentID, bool completed) async {
     try {
@@ -213,7 +211,9 @@ class _completedToDoState extends State<completedToDo> {
                 } else if (snapshot.hasError) {
                   return Text('Error loading users: ${snapshot.error}');
                 } else {
-                  return CircularProgressIndicator();
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
               },
             ),
